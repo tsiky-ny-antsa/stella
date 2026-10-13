@@ -1,0 +1,149 @@
+================================================================================
+ENERGY COMMAND — RAPPORT D'ANALYSE ET CORRECTIONS (intégration serveurmen2)
+================================================================================
+Date : 10/10/2026 — Objet : chasse aux bugs + implémentation du 3e rôle
+Référence serveur : serveurmen2-modifie.zip (Spring Boot 4.1.1, port 8081,
+JWT 24 h, rôles ADMIN / RESPONSABLE / USER)
+
+--------------------------------------------------------------------------------
+1. BUGS CORRIGÉS
+--------------------------------------------------------------------------------
+
+[B1 — CRITIQUE] Rôles désalignés avec le serveur
+  L'app utilisait ADMIN / RESPONSABLE / OBSERVATEUR, mais le serveur renvoie
+  ADMIN / RESPONSABLE / USER. Le rôle USER (client en consultation seule)
+  tombait dans le branchement par défaut "par chance".
+  → User.java réécrit : ROLE_ADMIN / ROLE_RESPONSABLE / ROLE_USER + helpers
+    estAdmin(), estResponsable(), peutConsulter(), peutGererComptes(),
+    peutSupprimerComptes(). Compte de démonstration "personnel" passé à USER.
+
+[B2 — CRITIQUE] Le 3e rôle était inutilisable depuis l'app
+  Le spinner de création de compte ne proposait que USER et ADMIN
+  (CODES_ROLES = {"USER","ADMIN"}) : impossible de créer un RESPONSABLE.
+  → UserManagementActivity : deux tableaux de codes selon le rôle courant.
+    - ADMIN peut créer : USER, RESPONSABLE, ADMIN (array roles_admin) ;
+    - RESPONSABLE peut créer : USER, RESPONSABLE (array roles_responsable) ;
+      le choix ADMIN lui est caché (anti-élévation serveur : 403 sinon).
+
+[B3 — CRITIQUE] Le RESPONSABLE réel était écrasé vers l'écran de démo
+  navigate() envoyait le RESPONSABLE du serveur vers CommandeActivity
+  (bouton de commande désactivé, sans carburant ni alertes ni comptes) alors
+  que le serveur lui permet consultation + gestion partielle des comptes.
+  → AdminDashboardActivity devient l'écran partagé ADMIN/RESPONSABLE :
+    même tableau de bord complet, titre adapté ("Energy Command — Responsable"),
+    le rôle est transmis à UserManagementActivity via EXTRA_ROLE.
+    USER reste sur ObservationActivity (consultation seule).
+
+[B4 — MAJEUR] 403 anti-élévation affiché comme "Serveur inaccessible"
+  Un RESPONSABLE qui tentait de créer un ADMIN recevait 403 du serveur
+  {erreur:"acces_refuse"} et l'app affichait le message trompeur
+  "Serveur inaccessible. Vérifiez que le serveur Spring Boot est démarré…".
+  → Gestion explicite de 403 dans addUser() (msg_creation_refusee avec le
+    message du serveur) et dans loadUsers() (err_admin_responsable_requis).
+
+[B5 — MAJEUR] Session expirée (401) laissait l'app bloquée
+  Après 24 h (expiration du JWT), toutes les requêtes renvoyaient 401 ; les
+  écrans restaient figés avec "Source : démonstration (Session expirée…)" et
+  aucune redirection vers le login.
+  → ApiClient expose OnSessionExpiree : sur 401 d'une requête protégée
+    (le 401 du LOGIN est exclu — ce sont des identifiants incorrects), les
+    écrans Admin/Observation/Commande/UserManagement nettoient la session et
+    retournent à l'écran de connexion avec le message "Session expirée —
+    veuillez vous reconnecter." L'écouteur est posé dans onResume (toujours
+    l'écran visible) et retiré dans onDestroy (pas de fuite d'activité).
+
+[B6 — MOYEN] Échec silencieux de la liste des comptes
+  loadUsers() avalait les exceptions (catch ignored) : écran figé sans message
+  si la réponse était inattendue. La zone de liste n'était pas restaurée après
+  une erreur précédente.
+  → afficherErreurListe() affiche l'erreur ; la liste repasse à VISIBLE à
+    chaque succès ; message dédié "Réponse du serveur illisible".
+
+[B7 — MOYEN] Auto-reconnexion inexistante
+  Le token était mémorisé mais jamais vérifié au démarrage : reconnexion
+  obligatoire à chaque ouverture même si le JWT était encore valable.
+  → Au démarrage de MainActivity : GET /api/auth/me avec le token mémorisé ;
+    200 → navigation directe vers l'écran du rôle ; 401 → token purgé,
+    formulaire normal. Le bouton est verrouillé pendant la vérification.
+
+[B8 — MINEUR] Affichages "0 min"
+  "il y a 0 min" pour un âge < 60 s et "bascule dans 0 min" : AffichageDashboard
+  affiche désormais "45 s" sous 2 minutes (dureeLisible), et bascule_dans
+  utilise %s au lieu de %d.
+
+[B9 — MINEUR] Double-clic sur "Se connecter" = deux requêtes de login
+  Verrou anti double-clic : le bouton est désactivé pendant la requête et
+  réactivé dans les deux callbacks.
+
+[B10 — MINEUR] Logout incomplet
+  session_role / session_username / session_email restaient dans les
+  préférences après déconnexion. → Nettoyage complet dans les 4 écrans.
+
+[B11 — DOC] CONTRAT_API.txt embarqué obsolète
+  Il annonçait "/api/users : rôle ADMIN uniquement" et "RESPONSABLE sans
+  équivalent serveur". → Sections RÔLES et 2 réécrites : trois niveaux,
+  GET/POST ouverts à ADMIN et RESPONSABLE, DELETE réservé à l'ADMIN,
+  anti-élévation 403, exemple de réponse 403 documenté.
+
+[B12 — LIVRABLE] Archive polluée
+  L'Interface.zip contenait build/, .gradle/, .idea/ et local.properties
+  (chemin Windows C:\Users\toshiba\...). → Zip livré sans ces dossiers
+  (le wrapper Gradle est conservé ; Android Studio recréera local.properties).
+
+--------------------------------------------------------------------------------
+2. IMPLÉMENTATION DU 3e RÔLE (décision équipe client)
+--------------------------------------------------------------------------------
+Matrice appliquée (identique au serveur) :
+
+  Fonction                      | USER | RESPONSABLE | ADMIN
+  ------------------------------+------+-------------+------
+  Consultation états/dashboard  |  OUI |     OUI     |  OUI
+  Lister les comptes            |  non |     OUI     |  OUI
+  Créer USER / RESPONSABLE      |  non |     OUI     |  OUI
+  Créer ADMIN                   |  non |     non     |  OUI
+  Supprimer un compte           |  non |     non     |  OUI
+  Écran de commande (démo)      |  non |     OUI     |  OUI
+  Interface                     | Observation | Dashboard | Dashboard
+
+  (La consultation /api/etats/** et /api/auth/me reste ouverte à tout compte
+   connecté — inchangée côté serveur.)
+
+Fichiers modifiés :
+  - User.java (rôles + helpers)
+  - UserStore.java (comptes de démonstration alignés)
+  - MainActivity.java (routage 3 rôles, auto-reconnexion, verrou login,
+    extra session expirée)
+  - AdminDashboardActivity.java (écran partagé ADMIN/RESPONSABLE, titre,
+    déconnexion forcée/volontaire)
+  - UserManagementActivity.java (spinner par rôle, suppression masquée pour
+    RESPONSABLE, 403 géré)
+  - ObservationActivity.java / CommandeActivity.java (hook 401, logout complet)
+  - ApiClient.java (profil(), OnSessionExpiree, Javadoc contrat)
+  - AffichageDashboard.java (durées lisibles)
+  - res/values/strings.xml (libellés, arrays roles_admin / roles_responsable)
+  - CONTRAT_API.txt (sections RÔLES et 2)
+
+Fichiers NON modifiés : PowerSystem.java, layouts, manifest, build.gradle
+(aucun changement de dépendance ni d'activité — pas de nouvelle Activity).
+
+--------------------------------------------------------------------------------
+3. À TESTER CÔTÉ ÉQUIPE CLIENT (scénario express)
+--------------------------------------------------------------------------------
+1. Serveur démarré : login admin/admin123 → tableau de bord ADMIN.
+2. Gérer les utilisateurs → créer "client1" (rôle Client/USER) → 201.
+3. Créer "responsable1" (rôle Responsable) → déconnexion → login responsable1
+   → tableau de bord "— Responsable" : la suppression des comptes est absente,
+   le choix ADMIN n'existe pas dans le spinner.
+4. Avec responsable1 : tenter de créer un compte → OK (USER/RESPONSABLE) ;
+   un 403 ne peut plus être provoqué depuis l'UI (option retirée).
+5. Login client1 → interface Consultation, aucune commande.
+6. Laisser expirer le token (ou changer app.jwt.secret côté serveur) → au
+   prochain rafraîchissement, retour automatique au login avec le message
+   "Session expirée — veuillez vous reconnecter."
+7. Redémarrer l'app avec un token encore valable → navigation directe sans
+   ressaisie (auto-reconnexion).
+8. Serveur éteint → mode démonstration inchangé (admin/responsable/personnel).
+
+Rappel serveur (inchangé) : POST /api/users accepte
+"role": "USER" | "RESPONSABLE" | "ADMIN" (insensible à la casse, USER par
+défaut) ; seul un ADMIN peut créer un ADMIN ; DELETE réservé à l'ADMIN.

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Approximations visuelles de la palette JIRAMA (voir Doc/DESIGN_MOBILE.md), pas une charte officielle. -->
+<resources>
+    <color name="brand_blue">#2376A8</color>
+    <color name="brand_orange">#F59B23</color>
+    <color name="brand_white">#FFFFFF</color>
+    <color name="surface">#F4F7FA</color>
+    <color name="text_primary">#172B3A</color>
+    <color name="text_secondary">#667085</color>
+    <color name="status_ok">#17834D</color>
+    <color name="status_warning">#B54708</color>
+    <color name="status_critical">#B42318</color>
+    <color name="border">#D0D7DE</color>
+    <color name="warning_bg">#FEF0C7</color>
+</resources>

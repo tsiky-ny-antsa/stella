@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stella</string>
+
+    <!-- Navigation -->
+    <string name="nav_overview">Vue d\'ensemble</string>
+    <string name="nav_commands">Commandes</string>
+    <string name="nav_events">Événements</string>
+    <string name="nav_settings">Paramètres</string>
+
+    <!-- Connexion -->
+    <string name="login_subtitle">Supervision de l\'alimentation JIRAMA / UPS / GE</string>
+    <string name="login_username">Identifiant</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="login_server">URL du serveur (développement)</string>
+    <string name="login_button">Se connecter</string>
+    <string name="login_loading">Connexion…</string>
+    <string name="login_empty_fields">Renseignez l\'identifiant et le mot de passe.</string>
+
+    <!-- Erreurs -->
+    <string name="err_invalid_credentials">Identifiant ou mot de passe incorrect.</string>
+    <string name="err_network">Serveur injoignable. Vérifiez la connexion et l\'URL du serveur.</string>
+    <string name="err_session_expired">Session expirée. Veuillez vous reconnecter.</string>
+    <string name="err_forbidden">Action non autorisée pour votre rôle.</string>
+    <string name="err_validation">Données invalides.</string>
+    <string name="err_bad_response">Réponse du serveur illisible.</string>
+    <string name="err_generic">Erreur : %1$s</string>
+    <string name="err_no_device">Aucun équipement disponible pour votre compte.</string>
+
+    <!-- Communs -->
+    <string name="refresh">Actualiser</string>
+    <string name="loading">Chargement…</string>
+    <string name="unknown">Inconnu</string>
+    <string name="cancel">Annuler</string>
+    <string name="none_value">—</string>
+    <string name="last_update">Dernière mise à jour : %1$s</string>
+    <string name="banner_stale">Données périmées — état inconnu</string>
+    <string name="banner_offline">Hors ligne — données en cache (anciennes). Aucune commande ne peut être envoyée.</string>
+
+    <!-- Vue d\'ensemble -->
+    <string name="dash_connection">Connexion</string>
+    <string name="conn_online">Appareil en ligne</string>
+    <string name="conn_offline">Appareil hors ligne</string>
+    <string name="conn_unknown">Connexion inconnue</string>
+    <string name="last_seen">Dernière communication : %1$s</string>
+    <string name="dash_state">État global</string>
+    <string name="dash_remaining">Temps restant (mesure du contrôleur) : %1$d min %2$02d s</string>
+    <string name="dash_power">Alimentation</string>
+    <string name="src_jirama">JIRAMA</string>
+    <string name="src_ups">UPS</string>
+    <string name="src_ge">Groupe électrogène</string>
+    <string name="src_ats">ATS</string>
+    <string name="src_safety">Sécurités</string>
+    <string name="jirama_present">● Présente</string>
+    <string name="jirama_absent">▲ Absente</string>
+    <string name="ups_low">▲ Batterie faible</string>
+    <string name="ups_ok">● Batterie normale</string>
+    <string name="ge_absent">Absent</string>
+    <string name="ge_detected">▲ Détecté, non stable</string>
+    <string name="ge_stable">● Tension stable</string>
+    <string name="ge_running">● En marche</string>
+    <string name="ats_jirama">Sur JIRAMA</string>
+    <string name="ats_ge">Sur GE</string>
+    <string name="ats_other">▲ Position : %1$s (à vérifier)</string>
+    <string name="safety_ok">● Aucune sécurité active</string>
+    <string name="safety_emergency">■ ARRÊT D\'URGENCE ACTIF</string>
+    <string name="safety_manual">▲ Sélecteur MANUEL actif</string>
+    <string name="safety_fault">■ Défaut GE : %1$s</string>
+    <string name="dash_alerts">Alertes ouvertes : %1$d</string>
+    <string name="dash_events">Derniers événements</string>
+    <string name="dash_active_command">Commande en cours : %1$s — %2$s</string>
+
+    <!-- États globaux (codes serveur -> texte) -->
+    <string name="st_normal">Normal</string>
+    <string name="st_jirama_outage">Coupure JIRAMA</string>
+    <string name="st_waiting">En attente</string>
+    <string name="st_ge_starting">Démarrage GE</string>
+    <string name="st_ge_stable">GE stable</string>
+    <string name="st_transferring">Transfert en cours</string>
+    <string name="st_ge_power">Alimentation GE</string>
+    <string name="st_returning">Retour JIRAMA</string>
+    <string name="st_fault">Défaut</string>
+    <string name="st_manual">Mode manuel</string>
+
+    <!-- Commandes -->
+    <string name="cmd_start_ge">Démarrer le GE</string>
+    <string name="cmd_stop_ge">Arrêter le GE</string>
+    <string name="cmd_transfer_ge">Transférer vers GE</string>
+    <string name="cmd_transfer_jirama">Retour JIRAMA</string>
+    <string name="cmd_reset_fault">Acquitter le défaut</string>
+    <string name="cmd_mode_auto">Passer en mode AUTO</string>
+    <string name="cmd_mode_remote">Passer en mode DISTANT</string>
+    <string name="cmd_confirm_title">Confirmer la commande</string>
+    <string name="cmd_confirm_yes">Confirmer</string>
+    <string name="cmd_confirm_start">Demander le démarrage du groupe électrogène ? Le contrôleur vérifie l\'état physique avant d\'exécuter : l\'exécution n\'est pas garantie.</string>
+    <string name="cmd_confirm_stop">Demander l\'arrêt du groupe électrogène ? Si la charge est sur le GE, vérifiez d\'abord l\'alimentation de remplacement.</string>
+    <string name="cmd_confirm_transfer_ge">Demander le transfert de la charge vers le GE ? Le contrôleur refusera si le GE n\'est pas confirmé stable.</string>
+    <string name="cmd_confirm_transfer_jirama">Demander le retour de la charge sur la JIRAMA ? Le contrôleur refusera si la JIRAMA n\'est pas stable.</string>
+    <string name="cmd_confirm_reset_fault">Demander l\'acquittement du défaut ? Cela ne corrige pas la cause physique du défaut.</string>
+    <string name="cmd_confirm_mode_auto">Demander le passage en mode AUTO ?</string>
+    <string name="cmd_confirm_mode_remote">Demander le passage en mode DISTANT ? Un sélecteur matériel MANUEL reste prioritaire.</string>
+    <string name="cmd_reason_default">Demande opérateur</string>
+    <string name="cmd_disabled_role">Votre rôle ne permet pas de commander.</string>
+    <string name="cmd_disabled_stale">Commandes désactivées : données périmées ou appareil hors ligne.</string>
+    <string name="cmd_disabled_emergency">Commandes désactivées : arrêt d\'urgence actif.</string>
+    <string name="cmd_disabled_manual">Commandes désactivées : sélecteur matériel en MANUEL.</string>
+    <string name="cmd_disabled_unknown">Commandes désactivées : état des sécurités inconnu.</string>
+    <string name="cmd_disabled_busy">Une commande est déjà en cours de suivi.</string>
+    <string name="cmd_progress_title">Commande suivie</string>
+    <string name="cmd_progress_note">Une réponse « enregistrée » ne prouve pas l\'exécution : seul le statut renvoyé par le contrôleur fait foi.</string>
+    <string name="cmd_tracking_stopped">Suivi interrompu. Consultez l\'historique pour le résultat.</string>
+    <string name="cmd_history">Historique des commandes</string>
+    <string name="cmd_history_empty">Aucune commande.</string>
+    <string name="cmd_sent_pending">Envoi de la demande…</string>
+    <string name="cmd_error_retry">Envoi non confirmé (réseau). Réessayer réutilise la même demande, sans doublon.</string>
+
+    <!-- Statuts de commande -->
+    <string name="cs_queued">En attente</string>
+    <string name="cs_delivered">Livrée</string>
+    <string name="cs_accepted">Acceptée</string>
+    <string name="cs_running">En cours</string>
+    <string name="cs_succeeded">Terminée</string>
+    <string name="cs_rejected">Refusée</string>
+    <string name="cs_failed">Échec</string>
+    <string name="cs_expired">Expirée</string>
+    <string name="cs_cancelled">Annulée</string>
+
+    <!-- Événements et alertes -->
+    <string name="ev_alerts">Alertes ouvertes</string>
+    <string name="ev_journal">Journal des événements</string>
+    <string name="ev_filter_all">Toutes sévérités</string>
+    <string name="ev_empty">Aucun événement.</string>
+    <string name="ev_alerts_empty">Aucune alerte ouverte.</string>
+    <string name="ev_ack">Acquitter</string>
+    <string name="ev_ack_done">Alerte acquittée.</string>
+    <string name="ev_ack_note">Acquitter une alerte ne réinitialise pas un défaut physique.</string>
+
+    <!-- Paramètres -->
+    <string name="set_account">Compte</string>
+    <string name="set_role">Rôle : %1$s</string>
+    <string name="set_server">Serveur</string>
+    <string name="set_server_save">Enregistrer l\'URL</string>
+    <string name="set_server_saved">URL enregistrée.</string>
+    <string name="set_device">Équipement</string>
+    <string name="set_firmware">Version firmware : %1$s</string>
+    <string name="set_logout">Se déconnecter</string>
+    <string name="set_admin">Administration</string>
+    <string name="set_admin_todo">Gestion des utilisateurs et configuration des temporisations : à venir (P1). Les paramètres électriques restent masqués tant que la responsable électronique ne les a pas validés.</string>
+</resources>

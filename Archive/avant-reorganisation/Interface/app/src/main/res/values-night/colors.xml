@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Charte graphique - MODE SOMBRE -->
+    <color name="couleur_principale">#8AB4F8</color>
+    <color name="couleur_fond">#121212</color>
+    <color name="couleur_carte">#1E1E1E</color>
+    <color name="couleur_texte">#F8FAFC</color>
+    <color name="couleur_texte_secondaire">#9E9E9E</color>
+    <color name="couleur_texte_bouton">#000000</color>
+    <!-- Couleurs pour les alertes (Nuit) -->
+    <color name="couleur_erreur">#EF5350</color> <!-- Rouge plus clair pour être lisible sur fond sombre -->
+    <color name="couleur_succes">#81C784</color> <!-- Vert plus pastel -->
+</resources>

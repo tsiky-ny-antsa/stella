@@ -1,0 +1,14 @@
+from typing import Literal
+
+Role = Literal["ADMIN", "OPERATEUR", "LECTURE"]
+Severity = Literal["INFO", "WARNING", "CRITICAL"]
+CommandType = Literal["START_GE", "STOP_GE", "TRANSFER_TO_GE", "TRANSFER_TO_JIRAMA", "RESET_FAULT", "SET_MODE"]
+CommandStatus = Literal["QUEUED", "DELIVERED", "ACCEPTED", "RUNNING", "SUCCEEDED", "REJECTED", "FAILED",
+                        "EXPIRED", "CANCELLED"]
+AckStage = Literal["ACCEPTED", "REJECTED", "RUNNING", "SUCCEEDED", "FAILED"]
+EventType = Literal[
+    "DEVICE_BOOT", "JIRAMA_OFF", "JIRAMA_ON", "WAIT_STARTED", "WAIT_REMINDER", "UPS_LOW_BATTERY",
+    "START_REQUESTED", "GE_DETECTED", "GE_STABLE", "START_FAILED", "TRANSFER_REQUESTED", "ATS_ON_GE",
+    "ATS_ON_JIRAMA", "STOP_REQUESTED", "STOP_FAILED", "FAULT", "FAULT_RESET", "MODE_CHANGED", "EMERGENCY_STOP",
+]
+EVENT_TYPES = set(EventType.__args__)  # type: ignore[attr-defined]

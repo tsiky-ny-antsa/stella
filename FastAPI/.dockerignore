@@ -1,0 +1,33 @@
+# Secrets et configuration locale
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Environnements et caches Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Tests : non nécessaires dans l'image d'exécution
+tests/
+
+# Données locales
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Outils et contrôle de versions
+.git/
+.idea/
+.vscode/
+.DS_Store

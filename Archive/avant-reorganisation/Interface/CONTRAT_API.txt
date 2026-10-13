@@ -1,0 +1,186 @@
+================================================================================
+ENERGY COMMAND — CONTRAT D'API DU SERVEUR "serveurmen2" (Spring Boot)
+================================================================================
+
+Ce document est extrait directement du code source du serveur fourni
+(serveurmen2, Spring Boot 4.1.1 + JPA + SQLite + JWT). L'application Android
+"Energy Command" a été réécrite pour consommer EXACTEMENT ces routes.
+
+ADRESSE ET DÉMARRAGE
+--------------------
+  - Port : 8081 (application.properties : server.port=8081, écoute sur 0.0.0.0)
+  - URL côté téléphone : http://<IP-du-PC>:8081   (modifiable DANS l'app :
+    écran de connexion → ligne « Serveur : … — toucher pour modifier »)
+  - Démarrage : ./gradlew bootRun   ou   java -jar build/libs/serveurmen2-*.jar
+  - Base : SQLite locale ./data/serveurmen2.db (créée automatiquement)
+  - Le téléphone et le PC doivent être sur le même réseau Wi-Fi ; si le
+    pare-feu bloque, autoriser le port 8081 (Windows : règle entrante TCP).
+
+AUTHENTIFICATION (JWT)
+----------------------
+  - POST /api/auth/login renvoie un token JWT valable 24 h (1440 min).
+  - Toute requête protégée doit porter l'en-tête :
+        Authorization: Bearer <token>
+  - Zones protégées : /api/etats/** et /api/auth/me (tout compte connecté),
+    /api/users/** (ADMIN et RESPONSABLE ; DELETE réservé à l'ADMIN → 403 sinon).
+  - Zones ouvertes : /api/auth/login, /api/esp32/** (ingestion ESP32).
+  - Compte ADMIN créé automatiquement au premier démarrage
+    (app.admin.username=admin, app.admin.password=admin123 — À CHANGER).
+
+RÔLES (trois niveaux, décision équipe client)
+---------------------------------------------
+  ADMIN       : accès complet — crée des comptes de tous les rôles,
+                supprime des comptes.
+  RESPONSABLE : supervision — consultation complète + gestion PARTIELLE des
+                comptes (lister, créer des USER et RESPONSABLE ; la création
+                d'ADMIN et la suppression lui sont refusées → 403).
+  USER        : client standard, CONSULTATION SEULE des états et historiques.
+  Côté application : ADMIN → tableau de bord complet + gestion des comptes ;
+                     RESPONSABLE → même tableau de bord, gestion partielle ;
+                     USER → interface de consultation (lecture seule).
+  (Anti-élévation serveur : seul un ADMIN peut créer un compte ADMIN.
+   L'ancien rôle "OBSERVATEUR" de la démonstration n'existe pas côté serveur :
+   c'est USER qui le remplace.)
+
+FORMAT DES ERREURS (homogène)
+-----------------------------
+  { "erreur": "code_erreur", "details": "explication" }
+  Codes HTTP : 400 (requête invalide), 401 (non authentifié / identifiants
+  incorrects), 403 (rôle insuffisant), 404 (inconnu), 409 (doublon).
+  Les dates sont des Instant ISO-8601 UTC, ex : "2026-10-09T06:12:00Z".
+
+================================================================================
+1) CONNEXION — POST /api/auth/login
+================================================================================
+Corps (JSON) :
+  { "identifiant": "admin", "password": "admin123" }
+  (identifiant = nom d'utilisateur OU email)
+
+Succès 200 :
+  {
+    "token": "eyJhbGciOi...",
+    "tokenType": "Bearer",
+    "expireDansSecondes": 86400,
+    "user": { "id": 1, "username": "admin",
+              "email": "admin@serveurmen2.local", "role": "ADMIN" }
+  }
+
+Échec 401 : { "erreur": "identifiants_incorrects" }
+
+Profil de l'utilisateur connecté : GET /api/auth/me (Bearer)
+  → 200 { "id", "username", "email", "role" }
+
+================================================================================
+2) GESTION DES COMPTES — /api/users  (ADMIN et RESPONSABLE)
+================================================================================
+GET /api/users → 200    (ADMIN et RESPONSABLE)
+  [
+    { "id": 1, "username": "admin", "email": "admin@serveurmen2.local",
+      "role": "ADMIN" },
+    { "id": 2, "username": "rakoto", "email": "rakoto@x.mg", "role": "USER" }
+  ]
+  (les mots de passe ne sont JAMAIS renvoyés)
+
+POST /api/users — corps (JSON) :   (ADMIN et RESPONSABLE, avec limites)
+  {
+    "username": "rakoto",         // 3-64 car., [A-Za-z0-9_-]
+    "email": "rakoto@x.mg",       // @Email valide
+    "password": "secret6",        // 6-128 caractères (haché BCrypt côté serveur)
+    "role": "USER"                // "USER" | "RESPONSABLE" | "ADMIN" ; absent → USER
+  }
+  → 201 { "id": 2, "username": "rakoto", "email": "rakoto@x.mg", "role": "USER" }
+  → 409 { "erreur": "doublon", "details": "nom d'utilisateur deja pris : ..." }
+  → 400 { "erreur": "champ_invalide", "details": "..." }
+  → 403 { "erreur": "acces_refuse", "details": "seul un ADMIN peut creer un
+          compte ADMIN" }   (anti-élévation : un RESPONSABLE qui crée un ADMIN)
+
+DELETE /api/users/{id}   (ADMIN UNIQUEMENT — un RESPONSABLE reçoit 403)
+  → 204 (supprimé) | 404 (inconnu) | 400 {erreur:"suppression_interdite"}
+    (impossible de supprimer son propre compte)
+
+================================================================================
+3) ÉTATS DU SYSTÈME — /api/etats/{deviceId}/...  (compte connecté requis)
+================================================================================
+deviceId = identifiant de l'ESP32 ([A-Za-z0-9_-], 1-64 car., ex : "esp32-01").
+L'application le demande dans l'écran de connexion (ligne « Serveur »).
+
+3.1 GET /api/etats/{deviceId}/alimentation  — TABLEAU DE BORD COMPLET
+    Utilisé par les interfaces Admin et Consultation. Réponse 200 :
+  {
+    "deviceId": "esp32-01",
+    "sourceActuelle": "LIGNE_FIXE",          // LIGNE_FIXE | ONDULEUR | GROUPE_ELECTROGENE
+    "motif": "declaration ESP32",
+    "depuis": "2026-10-09T06:12:00Z",
+    "ageSourceSecondes": 45,
+    "basculePrevue": "2026-10-09T06:17:00Z", // renseigné si source = ONDULEUR
+    "secondesAvantBascule": 120,             // peut être négatif (délai dépassé)
+    "lignefixePresente": true,               // null si aucune donnée ligne fixe
+    "lignefixeDepuis": "2026-10-09T06:12:00Z",
+    "dernierCarburant": {                    // null si aucune mesure
+      "id": 3, "deviceId": "esp32-01",
+      "niveauPourcent": 62.5, "valeurBrute": 512,
+      "mesureAt": "2026-10-09T06:10:00Z", "receivedAt": "...",
+      "ageSecondes": 180
+    },
+    "alertesActives": [
+      { "id": 1, "type": "CARBURANT_BAS", "message": "Niveau bas",
+        "details": {...}, "signaleeAt": "..." }
+    ]
+  }
+  → 404 si le deviceId est inconnu.
+
+3.2 GET /api/etats/{deviceId}/historique?page=0&taille=50[&debut=&fin=]
+    Historique de la ligne fixe (présent/absent), du plus récent au plus ancien :
+  {
+    "contenu": [
+      { "id": 12, "deviceId": "esp32-01", "present": false,
+        "capturedAt": "...", "receivedAt": "..." }
+    ],
+    "page": 0, "taille": 50, "totalElements": 1, "totalPages": 1,
+    "premiere": true, "derniere": true
+  }
+
+3.3 GET /api/etats/{deviceId}/alimentation/historique?page=0&taille=50
+    Timeline des sources (même enveloppe PageResponse) :
+  { "contenu": [
+      { "id": 5, "deviceId": "esp32-01", "source": "ONDULEUR",
+        "motif": "...", "capturedAt": "...", "receivedAt": "..." } ], ... }
+
+3.4 GET /api/etats/{deviceId}/alertes?resolues=false&limite=50
+    → [ { "id", "deviceId", "type", "message", "details",
+          "signaleeAt", "resolueAt", "active" } ]
+    Types connus : SECOURS_INOPERATIONNEL, CARBURANT_BAS (auto-résolution serveur).
+
+3.5 GET /api/etats/{deviceId}/carburant?limite=50
+    → [ { "id", "deviceId", "niveauPourcent", "valeurBrute",
+          "mesureAt", "receivedAt", "ageSecondes" } ]
+    (série du plus ancien au plus récent, prête pour un graphique)
+
+================================================================================
+4) INGESTION ESP32 — /api/esp32/{deviceId}/...  (ouvert, sans JWT)
+================================================================================
+Routes appelées par le microcontrôleur (documentation — non utilisées par l'app) :
+  POST /api/esp32/{deviceId}/lignefixe          {present, capturedAt}
+  GET  /api/esp32/{deviceId}/lignefixe/latest
+  GET  /api/esp32/{deviceId}/lignefixe?limite=
+  POST /api/esp32/{deviceId}/source             {source: LIGNE_FIXE|ONDULEUR|
+                                                 GROUPE_ELECTROGENE, motif, capturedAt}
+  POST /api/esp32/{deviceId}/alertes            {type, message, details, capturedAt}
+  POST /api/esp32/{deviceId}/carburant          {niveauPourcent, valeurBrute?, capturedAt}
+  GET  /api/esp32/{deviceId}/config             → délai de bascule, intervalle
+                                                 carburant, seuil d'alerte (centralisé)
+
+BASCULE AUTOMATIQUE
+-------------------
+Quand la source devient ONDULEUR, le serveur calcule basculePrevue =
+capturedAt + app.alimentation.delai-bascule-secondes (300 s en phase actuelle,
+2700 s = 45 min en production). La commande MANUELLE du groupe (FORCAGE_) est
+prévue pour une itération future du serveur : en attendant, le bouton de
+commande de l'app est actif UNIQUEMENT en mode démonstration (serveur éteint).
+
+SÉCURITÉ (rappels)
+------------------
+  - app.jwt.secret : À CHANGER en production (openssl rand -base64 48).
+  - app.admin.password : À CHANGER au premier démarrage.
+  - HTTP en clair : à réserver au réseau local ; pour un accès distant, HTTPS.
+  - app.api-key (optionnel) : clé partagée pour les routes ESP32.

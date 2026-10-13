@@ -1,0 +1,4 @@
+// Fichier racine : les plugins sont déclarés dans gradle/libs.versions.toml
+plugins {
+    alias(libs.plugins.android.application) apply false
+}

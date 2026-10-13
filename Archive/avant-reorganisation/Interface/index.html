@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Mobile Bancaire</title>
+  <!-- Chargement de Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chargement de Vue.js 3 via CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+  <!-- Conteneur Vue.js -->
+  <div id="app" class="min-h-screen bg-slate-50 flex justify-center items-center p-4">
+    <!-- Conteneur simulant un écran de smartphone -->
+    <div class="w-full max-w-sm bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden font-sans">
+      
+      <!-- En-tête de l'application -->
+      <div class="p-6 flex justify-between items-center">
+        <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-700">←</button>
+        <h1 class="text-lg font-semibold text-slate-900">Découvrir</h1>
+        <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-700">🔔</button>
+      </div>
+
+      <!-- Carte Principale (Design moderne) -->
+      <div class="px-6 pb-6">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-tr from-indigo-500 to-purple-600 p-6 text-white shadow-lg shadow-indigo-200">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm text-indigo-100">Solde disponible</p>
+              <h2 class="text-3xl font-bold mt-1">1 240,50 €</h2>
+            </div>
+            <span class="text-2xl">✨</span>
+          </div>
+          <div class="mt-8 flex justify-between items-center text-sm text-indigo-100">
+            <p>**** **** **** 4291</p>
+            <p>Mon Portefeuille</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste d'actions tactiles -->
+      <div class="px-6 space-y-4">
+        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Actions rapides</h3>
+        <div class="grid grid-cols-3 gap-3">
+          <button @click="gererAction('Envoi')" class="p-4 bg-slate-50 hover:bg-indigo-50 rounded-2xl flex flex-col items-center transition">
+            <span class="text-xl mb-1">💸</span>
+            <span class="text-xs font-medium text-slate-700">Envoyer</span>
+          </button>
+          <button @click="gererAction('Recharge')" class="p-4 bg-slate-50 hover:bg-indigo-50 rounded-2xl flex flex-col items-center transition">
+            <span class="text-xl mb-1">📥</span>
+            <span class="text-xs font-medium text-slate-700">Recevoir</span>
+          </button>
+          <button @click="gererAction('Analyse')" class="p-4 bg-slate-50 hover:bg-indigo-50 rounded-2xl flex flex-col items-center transition">
+            <span class="text-xl mb-1">📊</span>
+            <span class="text-xs font-medium text-slate-700">Analyses</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barre de navigation basse (Bottom Navigation Bar) -->
+      <div class="mt-8 border-t border-slate-100 px-8 py-4 flex justify-between items-center bg-white">
+        <button class="text-indigo-600 flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[10px] font-bold">Accueil</span></button>
+        <button class="text-slate-400 hover:text-indigo-600 flex flex-col items-center"><span class="text-xl">💳</span><span class="text-[10px]">Cartes</span></button>
+        <button class="text-slate-400 hover:text-indigo-600 flex flex-col items-center"><span class="text-xl">👤</span><span class="text-[10px]">Profil</span></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script Vue.js -->
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      setup() {
+        function gererAction(type) {
+          alert(`Action mobile déclenchée : ${type}`);
+        }
+
+        return {
+          gererAction
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">Energy Command</string>
+
+    <!-- Messages de validation de la connexion -->
+    <string name="err_identifiant_requis">Veuillez saisir votre identifiant</string>
+    <string name="err_mdp_requis">Veuillez saisir votre mot de passe</string>
+    <string name="err_email_invalide">Adresse email invalide</string>
+    <string name="err_mdp_court">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="err_username_invalide">3 à 64 caractères : lettres, chiffres, _ ou - uniquement</string>
+    <string name="err_identifiants">Identifiants incorrects</string>
+    <string name="msg_identifiants_invalides">Aucun compte ne correspond. Vérifiez l\'identifiant et le mot de passe.</string>
+    <string name="msg_connexion_ok">Connexion réussie !</string>
+    <string name="msg_mode_demo">Serveur éteint — connexion en mode local (comptes de démonstration).</string>
+    <string name="toggle_theme">Basculer le thème jour/nuit</string>
+
+    <!-- Aide : comptes de démonstration (serveur éteint uniquement) -->
+    <string name="demo_accounts">Mode démonstration (serveur éteint) :\n• admin / admin123 (ADMIN)\n• responsable / resp123 (RESPONSABLE)\n• personnel / pers123 (USER)\nLes comptes réels sont créés par l\'admin (ou un responsable) sur le serveur.</string>
+
+    <!-- Communs aux 3 interfaces -->
+    <string name="welcome_format">Bienvenue, %s</string>
+    <string name="btn_quitter">Quitter</string>
+    <string name="section_source">Source d\'alimentation</string>
+    <string name="section_ligne">Ligne fixe JIRAMA</string>
+    <string name="section_carburant">Carburant du groupe électrogène</string>
+    <string name="section_alertes">Alertes actives</string>
+    <string name="section_historique">Historique de la ligne fixe</string>
+    <string name="section_timeline">Changements de source</string>
+    <string name="etat_ligne_ok">SOUS TENSION</string>
+    <string name="etat_ligne_coupure">COUPURE</string>
+    <string name="etat_ligne_inconnue">ÉTAT INCONNU</string>
+    <string name="depuis_format">Depuis %s</string>
+    <string name="bascule_dans">Bascule automatique vers le groupe dans %s</string>
+    <string name="bascule_depassee">Délai de bascule dépassé — attente du secours</string>
+    <string name="carburant_pourcent">Niveau : %d %%</string>
+    <string name="mesure_le">Mesuré le %s</string>
+    <string name="aucune_alerte">Aucune alerte active</string>
+    <string name="aucune_donnee">Aucune donnée</string>
+    <string name="prochaine_coupure_format">Prochaine coupure programmée (JIRAMA) : %s</string>
+
+    <!-- Source des données (serveur réel vs démo) -->
+    <string name="source_serveur">Source : capteurs réels —</string>
+    <string name="source_demo">Source : données de démonstration (serveur éteint)</string>
+    <string name="source_demo_erreur">Source : démonstration (%s)</string>
+
+    <!-- Interface 1 : Admin / Responsable (même tableau de bord) -->
+    <string name="titre_admin">Energy Command — Admin</string>
+    <string name="titre_responsable">Energy Command — Responsable</string>
+    <string name="btn_aller_commande">Commande du groupe (démo)</string>
+    <string name="btn_gestion_utilisateurs">Gérer les utilisateurs</string>
+
+    <!-- Interface 2 : Observation (lecture seule) -->
+    <string name="titre_observation">Energy Command — Consultation</string>
+    <string name="mode_consultation">Mode consultation : états, alertes et historiques visibles, aucune commande possible.</string>
+
+    <!-- Interface 3 : Commande (démonstration) -->
+    <string name="titre_commande">Commande du groupe</string>
+    <string name="btn_demarrer">Démarrer le groupe (démo)</string>
+    <string name="btn_arreter">Arrêter le groupe (démo)</string>
+    <string name="msg_groupe_demarre">Groupe électrogène démarré (démo).</string>
+    <string name="msg_groupe_arrete">Groupe électrogène arrêté (démo).</string>
+    <string name="note_commande_serveur">Bascule AUTOMATIQUE côté serveur : l\'ESP32 bascule sur le groupe après le délai configuré sans retour de la ligne JIRAMA. La commande manuelle (route FORCAGE_) n\'est pas encore disponible sur le serveur — bouton actif en mode démonstration uniquement.</string>
+    <string name="source_reelle">Source actuelle (capteurs réels)</string>
+
+    <!-- Gestion des utilisateurs (ADMIN et RESPONSABLE, API /api/users) -->
+    <string name="titre_gestion">Gestion des utilisateurs</string>
+    <string name="btn_retour">Retour</string>
+    <string name="section_ajout_compte">Ajouter un compte</string>
+    <string name="section_comptes_existants">Comptes existants</string>
+    <string name="label_role">Rôle du compte</string>
+    <string name="btn_ajouter_compte">Ajouter ce compte</string>
+    <string name="btn_supprimer">Supprimer</string>
+    <string name="titre_suppression">Supprimer le compte</string>
+    <string name="msg_confirmer_suppression">Supprimer définitivement le compte « %s » ?</string>
+    <string name="msg_compte_supprime">Compte supprimé.</string>
+    <string name="msg_suppression_refusee">Suppression refusée : %s</string>
+    <string name="msg_compte_cree_role">Compte créé sur le serveur (rôle %s).</string>
+    <string name="msg_doublon">Création refusée — %s</string>
+    <string name="msg_champ_invalide">Champ refusé — %s</string>
+    <string name="msg_creation_refusee">Création refusée par le serveur — %s</string>
+    <string name="msg_session_expiree">Session expirée — veuillez vous reconnecter.</string>
+    <string name="aucun_compte">Aucun compte sur le serveur.</string>
+    <string name="err_reponse_inattendue">Réponse du serveur illisible (format inattendu).</string>
+    <string name="err_serveur_injoignable">Serveur inaccessible. Vérifiez que le serveur Spring Boot est démarré sur le PC (port 8081) et que le téléphone est sur le même Wi-Fi.</string>
+    <string name="err_admin_responsable_requis">Accès refusé : les rôles ADMIN ou RESPONSABLE sont requis pour la gestion des comptes.</string>
+
+    <!-- Libellés des rôles (codes serveur : ADMIN, RESPONSABLE, USER) -->
+    <string name="role_admin_court">Administrateur</string>
+    <string name="role_responsable_court">Responsable</string>
+    <string name="role_user_court">Client (consultation seule)</string>
+
+    <!-- Choix de rôle à la création : dépend du compte connecté.
+         ADMIN peut créer les 3 rôles ; RESPONSABLE ne peut pas créer d’ADMIN
+         (anti-élévation : le serveur renverrait 403). -->
+    <string-array name="roles_admin">
+        <item>@string/role_choix_user</item>
+        <item>@string/role_choix_responsable</item>
+        <item>@string/role_choix_admin</item>
+    </string-array>
+    <string-array name="roles_responsable">
+        <item>@string/role_choix_user</item>
+        <item>@string/role_choix_responsable</item>
+    </string-array>
+    <string name="role_choix_user">Client — consultation seule (USER)</string>
+    <string name="role_choix_responsable">Responsable (RESPONSABLE)</string>
+    <string name="role_choix_admin">Administrateur (ADMIN)</string>
+
+    <!-- Adresse du serveur (modifiable sur l\'écran de connexion) -->
+    <string name="serveur_format">Serveur : %1$s — appareil : %2$s — toucher pour modifier</string>
+    <string name="titre_serveur">Serveur et appareil</string>
+    <string name="hint_url_serveur">http://IP-du-PC:8081</string>
+    <string name="hint_device_id">deviceId de l\'ESP32 (ex. esp32-01)</string>
+    <string name="msg_aide_serveur">L\'application interroge le serveur Spring Boot installé sur votre PC (port 8081). Saisissez son adresse (ex. http://192.168.1.40:8081) et le deviceId de l\'ESP32 remontant les mesures. Laissez vide pour revenir aux valeurs par défaut. Le téléphone et le PC doivent être sur le même réseau Wi-Fi.</string>
+    <string name="btn_enregistrer">Enregistrer</string>
+    <string name="msg_url_enregistree">Configuration du serveur enregistrée.</string>
+    <string name="err_url_invalide">L\'adresse doit commencer par http:// ou https://</string>
+</resources>

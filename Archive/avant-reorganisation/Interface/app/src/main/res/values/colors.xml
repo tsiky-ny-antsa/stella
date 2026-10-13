@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Charte graphique - MODE JOUR -->
+    <color name="couleur_principale">#1A237E</color>  <!-- Indigo foncé (titre) -->
+    <color name="couleur_fond">#F5F5F5</color>        <!-- Fond gris très clair -->
+    <color name="couleur_carte">#FFFFFF</color>
+    <color name="couleur_texte">#212121</color>
+    <color name="couleur_texte_secondaire">#757575</color>
+    <color name="couleur_texte_bouton">#000000</color>
+    <color name="couleur_accent">#FFC107</color>      <!-- Jaune énergie (bouton) -->
+    <!-- Couleurs pour les alertes (Jour) -->
+    <color name="couleur_erreur">#D32F2F</color>
+    <color name="couleur_succes">#388E3C</color>
+</resources>

@@ -1,0 +1,6 @@
+plugins {
+    // Telechargement automatique du JDK requis par le toolchain (utile en CI / sandbox)
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'serveurmen2'
